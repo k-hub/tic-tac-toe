@@ -51,17 +51,7 @@ class Game extends React.Component {
         }],
         stepNumber: 0,
         xIsNext: true,
-    };
-    this.squaresMap = {
-      0: '(c1, r1)',
-      1: '(c2, r1)',
-      2: '(c3, r1)',
-      3: '(c1, r2)',
-      4: '(c2, r2)',
-      5: '(c3, r2)',
-      6: '(c1, r3)',
-      7: '(c2, r3)',
-      8: '(c3, r3)',
+        activeStep: null,
     };
   }
 
@@ -78,6 +68,7 @@ class Game extends React.Component {
     this.setState({
         history: history.concat([{squares: squares}]),
         stepNumber: history.length,
+        activeStep: null,
         xIsNext: !this.state.xIsNext
     });
   }
@@ -86,8 +77,11 @@ class Game extends React.Component {
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
+      activeStep: step,
     });
   }
+
+
 
   render() {
     const history = this.state.history;
@@ -105,15 +99,15 @@ class Game extends React.Component {
           if (previousStep.squares[index] === square) {
             return;
           }
-          moveLoc = this.squaresMap[index];
+          return moveLoc = getSquareLoc(index);
         });
 
-        desc = moveLoc ? 'Go to move #' + move + ' ' + moveLoc : 'Go to move#' + move;
+        desc = moveLoc ? 'Go to move #' + move + ' ' + moveLoc : 'Go to move #' + move;
       }
 
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button className={move === this.state.activeStep ? 'active' : null} onClick={() => this.jumpTo(move)}>{desc}</button>
         </li>
       );
     })
@@ -159,6 +153,22 @@ function calculateWinner(squares) {
     }
   }
   return null;
+}
+
+function getSquareLoc(index) {
+  const squaresMap = {
+    0: '(c1, r1)',
+    1: '(c2, r1)',
+    2: '(c3, r1)',
+    3: '(c1, r2)',
+    4: '(c2, r2)',
+    5: '(c3, r2)',
+    6: '(c1, r3)',
+    7: '(c2, r3)',
+    8: '(c3, r3)',
+  };
+
+  return squaresMap[index];
 }
 // ========================================
 
