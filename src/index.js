@@ -19,24 +19,39 @@ class Board extends React.Component {
       );
   }
 
+  squaresPerRow(numSquares) {
+    const squares = this.props.squares;
+    const rows = [];
+    let tempRow = [];
+
+    for (let square = 0; square < squares.length; square++) {
+      const renderSquare = <span key={square}>{this.renderSquare(square)}</span>;
+      if (tempRow.length < numSquares) {
+          tempRow.push(renderSquare);
+      }
+      if (tempRow.length === numSquares) {
+        rows.push(tempRow);
+        tempRow = [];
+      }
+    }
+
+    const templatedRows = rows.map((row, rowNum) =>
+        <div key={rowNum} className="board-row">
+            {row}
+        </div>
+    );
+
+    return (
+      <div>
+        {templatedRows}
+      </div>
+    )
+  }
+
   render() {
     return (
       <div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+          {this.squaresPerRow(3)}
       </div>
     );
   }
@@ -80,8 +95,6 @@ class Game extends React.Component {
       activeStep: step,
     });
   }
-
-
 
   render() {
     const history = this.state.history;
