@@ -57,11 +57,6 @@ class Board extends React.Component {
   }
 }
 
-function SortList(arr) {
-  const sortedArr = [...arr].reverse();
-  return sortedArr
-}
-
 class MovesHistory extends React.Component {
   getMoves() {
     const history = this.props.moves;
@@ -81,7 +76,7 @@ class MovesHistory extends React.Component {
           return moveLoc = getSquareLoc(index);
         });
 
-        desc = moveLoc ? 'Go to move #' + move + ' ' + moveLoc : 'Go to move #' + move;
+        desc = 'Go to move ' + moveLoc;
       }
 
       return (
@@ -94,12 +89,23 @@ class MovesHistory extends React.Component {
     return moves;
   }
 
+  handleListSort() {
+    this.props.onSort();
+  }
+
   render() {
-    const moves= this.getMoves();
+    const isAscending = this.props.ascendingOrder;
+    let moves = this.getMoves();
+
+    if (!isAscending) {
+      moves = handleSort(moves);
+    }
+
     return (
-      <ol>
-        {moves}
-      </ol>
+      <div>
+        <button className="sort-button" onClick={() =>this.handleListSort()}>Sort by {isAscending ? 'Descending' : 'Ascending'} Order</button>
+        <ol>{moves}</ol>
+      </div>
     );
   }
 }
@@ -114,6 +120,7 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true,
       activeStep: null,
+      ascendingOrder: true,
     };
   }
 
@@ -131,7 +138,7 @@ class Game extends React.Component {
       history: history.concat([{squares: squares}]),
       stepNumber: history.length,
       activeStep: null,
-      xIsNext: !this.state.xIsNext
+      xIsNext: !this.state.xIsNext,
     });
   }
 
@@ -143,7 +150,13 @@ class Game extends React.Component {
     });
   }
 
+  handleSort() {
+    const isAscending = this.state.ascendingOrder;
+    this.setState({ascendingOrder: !isAscending});
+  }
+
   render() {
+    const ascendingOrder = this.state.ascendingOrder;
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
@@ -168,6 +181,8 @@ class Game extends React.Component {
           <MovesHistory
             moves={history}
             activeStep={activeStep}
+            ascendingOrder={ascendingOrder}
+            onSort={() => this.handleSort()}
             onClick={(step) => this.jumpTo(step)}
           />
         </div>
@@ -210,6 +225,12 @@ function getSquareLoc(index) {
   };
 
   return squaresMap[index];
+}
+
+function handleSort(arr) {
+  debugger;
+  const sortedArr = [...arr].reverse();
+  return sortedArr;
 }
 // ========================================
 
