@@ -93,12 +93,17 @@ class MovesHistory extends React.Component {
     this.props.onSort();
   }
 
+  sort(arr) {
+    const sortedArr = [...arr].reverse();
+    return sortedArr;
+  }
+
   render() {
     const isAscending = this.props.ascendingOrder;
     let moves = this.getMoves();
 
     if (!isAscending) {
-      moves = handleSort(moves);
+      moves = this.sort(moves);
     }
 
     return (
@@ -225,12 +230,6 @@ function getSquareLoc(index) {
   };
 
   return squaresMap[index];
-}
-
-function handleSort(arr) {
-  debugger;
-  const sortedArr = [...arr].reverse();
-  return sortedArr;
 }
 // ========================================
 
