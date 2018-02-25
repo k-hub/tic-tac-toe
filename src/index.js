@@ -25,7 +25,8 @@ class Board extends React.Component {
     let tempRow = [];
 
     for (let square = 0; square < squares.length; square++) {
-      const renderSquare = <span key={square}>{this.renderSquare(square)}</span>;
+      const renderSquare = this.props.winningSquares && this.props.winningSquares.includes(square) && this.props.isLatestMove ?
+        <span key={square} className="winningSquare">{this.renderSquare(square)}</span> : <span key={square}>{this.renderSquare(square)}</span>;
       if (tempRow.length < numSquares) {
           tempRow.push(renderSquare);
       }
@@ -150,12 +151,19 @@ class Game extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.setState({
+      isLatestMove: this.state.history.length - 1 === this.state.stepNumber ? true : false
+    });
+  }
+
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = [...current.squares];
+    let winnerDetails = calculateWinner(squares);
 
-    if (calculateWinner(squares) || squares[i]) {
+    if (winnerDetails || squares[i] || !this.state.isLatestMove) {
       return;
     }
 
@@ -165,6 +173,17 @@ class Game extends React.Component {
       stepNumber: history.length,
       activeStep: null,
       xIsNext: !this.state.xIsNext,
+      isLatestMove: this.state.history.length - 1 === this.state.stepNumber ? true : false,
+    }, () => {
+      winnerDetails = calculateWinner(squares);
+
+      console.log('isLatestMove: ', this.state.isLatestMove);
+      debugger;
+      if (winnerDetails) {
+        this.setState({
+          winningSquares: winnerDetails ? winnerDetails.winningSquares : null,
+        });
+      }
     });
   }
 
@@ -173,7 +192,8 @@ class Game extends React.Component {
       stepNumber: step,
       xIsNext: (step % 2) === 0,
       activeStep: step,
-    });
+      isLatestMove: this.state.history.length - 1 === step ? true : false,
+    }, () => console.log('jumpTo latestMove: ', this.state.isLatestMove));
   }
 
   render() {
@@ -194,6 +214,7 @@ class Game extends React.Component {
         <div className="game-board">
           <Board
             squares={current.squares}
+            isLatestMove={this.state.isLatestMove}
             winningSquares={this.state.winningSquares}
             onClick={(i) => this.handleClick(i)} />
         </div>

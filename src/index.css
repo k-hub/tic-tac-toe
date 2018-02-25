@@ -53,3 +53,7 @@ button.active {
 .game-info {
   margin-left: 20px;
 }
+
+.winningSquare button {
+    background-color: red;
+}
