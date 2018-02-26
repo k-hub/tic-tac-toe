@@ -80,14 +80,14 @@ class SortList extends React.Component {
 
     componentWillReceiveProps(nextProps) {
       // Reset button text
-      if (nextProps.moves.length < this.props.moves.length) {
+      if (nextProps.list.length < this.props.list.length) {
         this.setState(this._initialState);
       }
     }
 
     render() {
       const isAscending = this.state.ascendingOrder;
-      let moves = this.props.moves;
+      let moves = this.props.list;
 
       if (!isAscending) {
         moves = this.sort(moves);
@@ -138,7 +138,7 @@ class MovesHistory extends React.Component {
     const moves = this.getMoves();
     return (
       <div>
-        <SortList moves={moves} />
+        <SortList list={moves} />
       </div>
     );
   }
