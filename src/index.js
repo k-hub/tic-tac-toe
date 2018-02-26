@@ -176,9 +176,7 @@ class Game extends React.Component {
       isLatestMove: this.state.history.length - 1 === this.state.stepNumber ? true : false,
     }, () => {
       winnerDetails = calculateWinner(squares);
-
-      console.log('isLatestMove: ', this.state.isLatestMove);
-      debugger;
+      
       if (winnerDetails) {
         this.setState({
           winningSquares: winnerDetails ? winnerDetails.winningSquares : null,
