@@ -218,6 +218,8 @@ class Game extends React.Component {
     let status;
     if (winnerDetails) {
       status = 'Winner: ' + winnerDetails.winner;
+    } else if (history.length === current.squares.length + 1) {
+      status = `No one won. It\'s a draw!`;
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
@@ -244,6 +246,13 @@ class Game extends React.Component {
   }
 }
 
+// ========================================
+
+ReactDOM.render(
+  <Game />,
+  document.getElementById('root')
+);
+
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
@@ -261,6 +270,7 @@ function calculateWinner(squares) {
       return { winner: squares[a], winningSquares: [a, b, c] };
     }
   }
+
   return null;
 }
 
@@ -279,9 +289,3 @@ function getSquareLoc(index) {
 
   return squaresMap[index];
 }
-// ========================================
-
-ReactDOM.render(
-  <Game />,
-  document.getElementById('root')
-);
