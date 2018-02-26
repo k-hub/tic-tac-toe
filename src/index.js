@@ -64,7 +64,7 @@ class SortList extends React.Component {
       this.state = {
         ascendingOrder: true,
       };
-
+      this._initialState = Object.assign({}, this.state);
       this.handleSort = this.handleSort.bind(this);
     }
 
@@ -76,6 +76,13 @@ class SortList extends React.Component {
     sort(arr) {
       const sortedArr = [...arr].reverse();
       return sortedArr;
+    }
+
+    componentWillReceiveProps(nextProps) {
+      // Reset button text
+      if (nextProps.moves.length < this.props.moves.length) {
+        this.setState(this._initialState);
+      }
     }
 
     render() {
@@ -131,7 +138,7 @@ class MovesHistory extends React.Component {
     const moves = this.getMoves();
     return (
       <div>
-        <SortList moves={moves}/>
+        <SortList moves={moves} />
       </div>
     );
   }
@@ -149,6 +156,8 @@ class Game extends React.Component {
       activeStep: null,
       winningSquares: null,
     };
+
+    this._initialState = Object.assign({}, this.state);
   }
 
   componentDidMount() {
@@ -176,7 +185,7 @@ class Game extends React.Component {
       isLatestMove: this.state.history.length - 1 === this.state.stepNumber ? true : false,
     }, () => {
       winnerDetails = calculateWinner(squares);
-      
+
       if (winnerDetails) {
         this.setState({
           winningSquares: winnerDetails ? winnerDetails.winningSquares : null,
@@ -191,7 +200,13 @@ class Game extends React.Component {
       xIsNext: (step % 2) === 0,
       activeStep: step,
       isLatestMove: this.state.history.length - 1 === step ? true : false,
-    }, () => console.log('jumpTo latestMove: ', this.state.isLatestMove));
+    });
+  }
+
+  reset() {
+    this.setState(this._initialState,
+      () => this.setState({isLatestMove: this.state.history.length - 1 === this.state.stepNumber ? true : false})
+    );
   }
 
   render() {
@@ -218,6 +233,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
+          {history.length > 1 ? <button className="reset" onClick={() => this.reset()}>Reset</button> : null}
           <MovesHistory
             history={history}
             activeStep={activeStep}
